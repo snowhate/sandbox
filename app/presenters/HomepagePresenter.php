@@ -1,20 +1,15 @@
 <?php
 
-namespace App;
-
-use Nette,
-	Model;
+use Nette\Application\UI\Presenter;
 
 
-/**
- * Homepage presenter.
- */
-class HomepagePresenter extends BasePresenter
+class HomepagePresenter extends Presenter
 {
 
 	public function renderDefault()
 	{
-		$this->template->anyVariable = 'any value';
+		$this->template->title = 'Congratulations, it works!';
+		$this->template->message = 'You have successfully created your Nette Framework project.';
 	}
 
 }
