@@ -1,6 +1,5 @@
 log/*
 temp/*
-libs/*
 vendor/*
 !vendor/others
 
