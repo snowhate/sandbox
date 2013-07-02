@@ -33,7 +33,6 @@ class SignPresenter extends BasePresenter
 	}
 
 
-
 	public function signInFormSucceeded($form)
 	{
 		$values = $form->getValues();
@@ -52,7 +51,6 @@ class SignPresenter extends BasePresenter
 			$form->addError($e->getMessage());
 		}
 	}
-
 
 
 	public function actionOut()

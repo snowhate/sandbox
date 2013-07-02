@@ -3,7 +3,6 @@
 use Nette\Diagnostics\Debugger;
 
 
-
 /**
  * Error presenter.
  */
