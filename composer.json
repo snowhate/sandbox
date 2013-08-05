@@ -23,6 +23,6 @@
 		"dg/adminer-custom": "1"
 	},
 	"require-dev": {
-		"nette/tester": "@dev"
+		"nette/tester": "0.9.*"
 	}
 }
