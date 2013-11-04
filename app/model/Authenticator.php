@@ -4,21 +4,18 @@ use Nette\Security,
 	Nette\Utils\Strings;
 
 
-/*
-CREATE TABLE users (
-	id int(11) NOT NULL AUTO_INCREMENT,
-	username varchar(50) NOT NULL,
-	password char(60) NOT NULL,
-	role varchar(20) NOT NULL,
-	PRIMARY KEY (id)
-);
-*/
-
 /**
  * Users authenticator.
  */
 class Authenticator extends Nette\Object implements Security\IAuthenticator
 {
+	const
+		TABLE_NAME = 'users',
+		COLUMN_ID = 'id',
+		COLUMN_NAME = 'username',
+		COLUMN_PASSWORD = 'password',
+		COLUMN_ROLE = 'role';
+
 	/** @var Nette\Database\Connection */
 	private $database;
 
@@ -37,19 +34,19 @@ class Authenticator extends Nette\Object implements Security\IAuthenticator
 	public function authenticate(array $credentials)
 	{
 		list($username, $password) = $credentials;
-		$row = $this->database->table('users')->where('username', $username)->fetch();
+		$row = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_NAME, $username)->fetch();
 
 		if (!$row) {
 			throw new Security\AuthenticationException('The username is incorrect.', self::IDENTITY_NOT_FOUND);
 		}
 
-		if ($row->password !== $this->calculateHash($password, $row->password)) {
+		if ($row[self::COLUMN_PASSWORD] !== $this->calculateHash($password, $row[self::COLUMN_PASSWORD])) {
 			throw new Security\AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
 		}
 
 		$arr = $row->toArray();
-		unset($arr['password']);
-		return new Nette\Security\Identity($row->id, $row->role, $arr);
+		unset($arr[self::COLUMN_PASSWORD]);
+		return new Nette\Security\Identity($row[self::COLUMN_ID], $row[self::COLUMN_ROLE], $arr);
 	}
 
 
