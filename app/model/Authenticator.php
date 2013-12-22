@@ -39,9 +39,8 @@ class Authenticator extends Nette\Object implements Security\IAuthenticator
 
 		if (!$row) {
 			throw new Security\AuthenticationException('The username is incorrect.', self::IDENTITY_NOT_FOUND);
-		}
 
-		if ($row[self::COLUMN_PASSWORD] !== $this->calculateHash($password, $row[self::COLUMN_PASSWORD])) {
+		} elseif (!self::verifyPassword($password, $row[self::COLUMN_PASSWORD])) {
 			throw new Security\AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
 		}
 
@@ -56,13 +55,28 @@ class Authenticator extends Nette\Object implements Security\IAuthenticator
 	 * @param  string
 	 * @return string
 	 */
-	public static function calculateHash($password, $salt = NULL)
+	public static function hashPassword($password, $options = NULL)
 	{
 		if ($password === Strings::upper($password)) { // perhaps caps lock is on
 			$password = Strings::lower($password);
 		}
 		$password = substr($password, 0, self::PASSWORD_MAX_LENGTH);
-		return crypt($password, $salt ?: '$2a$07$' . Strings::random(22));
+		$options = $options ?: implode('$', array(
+			'algo' => '$2a', // blowfish
+			'cost' => '07',
+			'salt' => Strings::random(22),
+		));
+		return crypt($password, $options);
 	}
+
+
+	/**
+	 * Verifies that a password matches a hash.
+	 * @return bool
+	 */
+	public static function verifyPassword($password, $hash)
+	{
+		return $hash === self::hashPassword($password, $hash);
+}
 
 }
