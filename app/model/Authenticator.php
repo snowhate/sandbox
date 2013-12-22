@@ -76,7 +76,8 @@ class Authenticator extends Nette\Object implements Security\IAuthenticator
 	 */
 	public static function verifyPassword($password, $hash)
 	{
-		return $hash === self::hashPassword($password, $hash);
-}
+		return self::hashPassword($password, $hash) === $hash
+			|| (PHP_VERSION_ID >= 50307 && substr($hash, 0, 3) === '$2a' && self::hashPassword($password, $tmp = '$2x' . substr($hash, 3)) === $tmp);
+	}
 
 }
